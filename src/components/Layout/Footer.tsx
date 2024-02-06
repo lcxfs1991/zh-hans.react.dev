@@ -361,6 +361,12 @@ export function Footer() {
           })();
         `}
       </Script>
+      <Script
+        id="wwads"
+        src="https://cdn.wwads.cn/js/makemoney.js"
+        charSet="UTF-8"
+        async
+      />
     </footer>
   );
 }
