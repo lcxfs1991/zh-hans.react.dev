@@ -199,7 +199,7 @@ export function Page({children, toc, routeTree, meta, section}: PageProps) {
         <div
           className="wwads-cn wwads-horizontal wwads-sticky"
           data-id="306"
-          style={{position: 'fixed', bottom: 20, right: 10, maxWidth: '350px'}}
+          style={{position: 'fixed', bottom: 20, right: 10, maxWidth: '300px'}}
         />
       </div>
     </>
