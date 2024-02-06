@@ -196,6 +196,11 @@ export function Page({children, toc, routeTree, meta, section}: PageProps) {
         <div className="hidden -mt-16 lg:max-w-custom-xs 2xl:block">
           {showToc && toc.length > 0 && <Toc headings={toc} key={asPath} />}
         </div>
+        <div
+          className="wwads-cn wwads-horizontal wwads-sticky"
+          data-id="306"
+          style={{position: 'fixed', bottom: 20, right: 10, maxWidth: '300px'}}
+        />
       </div>
     </>
   );
