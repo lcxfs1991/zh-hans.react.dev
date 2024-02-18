@@ -197,9 +197,9 @@ export function Page({children, toc, routeTree, meta, section}: PageProps) {
           {showToc && toc.length > 0 && <Toc headings={toc} key={asPath} />}
         </div>
         <div
-          className="wwads-cn wwads-horizontal wwads-sticky"
+          className="wwads-cn wwads-vertical wwads-sticky"
           data-id="306"
-          style={{position: 'fixed', bottom: 20, right: 10, maxWidth: '300px'}}
+          style={{position: 'fixed', bottom: 0, right: 10, maxWidth: '240px'}}
         />
       </div>
     </>
