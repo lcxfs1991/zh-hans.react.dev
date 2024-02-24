@@ -18,6 +18,6 @@ jobs:
         branch: cn
         pr_labels: upstream
       env:
-        GITHUB_TOKEN: ${{ secrets.CHECKOUT_REPO_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITBOT_EMAIL: lcxfs1991@gmail.com
         DRY_RUN: false
