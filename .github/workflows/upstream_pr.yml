@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest  
     steps:  
       - name: Set up Git  
-        uses: gittools/actions/git@v1  
+        uses: gittools/actions/git@v0.11.0
         with:  
           fetchDepth: 0 # Fetch all history so that Git can determine the upstream correctly  
   
