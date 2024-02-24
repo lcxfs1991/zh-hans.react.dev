@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }} # 使用下游仓库的 PAT  
   
       - name: Set up Git  
-        uses: GitTools/actions@v0.11.0
+        uses: gittools/actions/git@v1 
   
       - name: Pull updates from upstream  
         run: |  
