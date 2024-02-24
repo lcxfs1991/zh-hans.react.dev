@@ -25,7 +25,7 @@ jobs:
           token: ${{ env.SYNCHRONISER_TOKEN }}
 
       - name: Render and synchronise the template repository
-        uses: n3tuk/action-synchronise-upstream@@v1.0.2
+        uses: n3tuk/action-synchronise-upstream@v1.0.2
         with:
           token: ${{ env.SYNCHRONISER_TOKEN }}
           repository: reactjs/zh-hans.react.dev
