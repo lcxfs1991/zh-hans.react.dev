@@ -13,7 +13,6 @@ permissions:
   pull-requests: write
 
 jobs:
-  jobs:
   template-sync:
     name: Template Synchronise
     runs-on: ubuntu-latest
