@@ -13,20 +13,23 @@ permissions:
   pull-requests: write
 
 jobs:
-  release_pull_request:
+  jobs:
+  template-sync:
+    name: Template Synchronise
     runs-on: ubuntu-latest
-    name: release_pull_request
+    # env:
+    #   SYNCHRONISER_TOKEN: ${{ secrets.SYNCHRONISER_TOKEN || secrets.GITHUB_TOKEN } }
     steps:
-    - name: checkout
-      uses: actions/checkout@v1
-    - name: Create PR to branch
-      uses: gorillio/github-action-sync@master
-      with:
-        upstream: git@github.com:reactjs/zh-hans.react.dev.git
-        upstream_branch: main
-        branch: cn
-        pr_labels: upstream
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITBOT_EMAIL: lcxfs1991@gmail.com
-        DRY_RUN: false
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        # with:
+        #   token: ${{ env.SYNCHRONISER_TOKEN }}
+
+      - name: Render and synchronise the template repository
+        uses: n3tuk/action-synchronise-upstream@v1
+        with:
+          # token: ${{ env.SYNCHRONISER_TOKEN }}
+          repository: reactjs/zh-hans.react.dev
+          branch: main
+          target: cn
+          labels: update from upstream
