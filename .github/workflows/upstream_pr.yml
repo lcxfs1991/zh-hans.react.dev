@@ -7,29 +7,35 @@ on:
     - cron:  '0 7 * * *'
 
 jobs:  
-  create-pull-request:  
+  pull-and-create-pr:  
     runs-on: ubuntu-latest  
     steps:  
-      - name: Checkout upstream repository
-        uses: actions/checkout@v4
-        with:
-          repository: git@github.com:reactjs/zh-hans.react.dev.git
-          ref: main
-
-      - name: Automatic rebase with upstream repository
-        uses: marvinpinto/action-automatic-rebase@v1
-        with:
-          base: lcxfs1991/zh-hans.react.dev:cn
-          fork: true
-
-      - name: Create Pull Request to downstream repository
-        uses: peter-evans/create-pull-request@v3
-        with:
-          title: Sync with upstream
-          body: Automatic sync with upstream repository
-          commit-message: Automatic sync with upstream repository
-          labels: automatic-sync
-          base: cn
-          branch: sync-upstream
-          token: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Checkout downstream repository  
+        uses: actions/checkout@v2 4
+        with:  
+          repository: lcxfs1991/zh-hans.react.dev
+          token: ${{ secrets.GITHUB_TOKEN }} # 使用下游仓库的 PAT  
+  
+      - name: Set up Git  
+        uses: GitTools/actions@v0.11.0
+  
+      - name: Pull updates from upstream  
+        run: |  
+          git remote add upstream https://github.com/reactjs/zh-hans.react.dev.git
+          git fetch upstream  
+          git merge upstream/main # 假设上游的主分支是 main  
+   
+      - name: Push changes to downstream  
+        run: |  
+          git push origin main  
+   
+      - name: Create Pull Request  
+        id: create-pr  
+        uses: peter-Evans/create-pull-request@v4  
+        with:  
+          token: ${{ secrets.GITHUB_TOKEN }}  
+          commit-message: "Automated updates from upstream"  
+          title: "Automated updates from upstream"  
+          body: "These changes were automatically merged from upstream."  
+          branch: "autoupdate/$(date +%Y%m%d%H%M%S)" # 创建一个基于时间的唯一分支名  
+          base: "cn"
