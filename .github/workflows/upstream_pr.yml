@@ -1,7 +1,5 @@
 name: Upstream PR
 on:
-  push:
-    branches: [ "cn" ]
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 7 * * *'
@@ -20,6 +18,5 @@ jobs:
         branch: cn
         pr_labels: upstream
       env:
-        GITHUB_TOKEN: ${{ secrets.CHECKOUT_REPO_TOKEN }}
         GITBOT_EMAIL: lcxfs1991@gmail.com
         DRY_RUN: false
