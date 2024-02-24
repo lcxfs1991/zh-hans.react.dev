@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest  
     steps:  
       - name: Checkout downstream repository  
-        uses: actions/checkout@v2 4
+        uses: actions/checkout@v4
         with:  
           repository: lcxfs1991/zh-hans.react.dev
           token: ${{ secrets.GITHUB_TOKEN }} # 使用下游仓库的 PAT  
