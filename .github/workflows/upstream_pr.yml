@@ -6,36 +6,21 @@ on:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 7 * * *'
 
-jobs:  
-  pull-and-create-pr:  
-    runs-on: ubuntu-latest  
-    steps:  
-      - name: Checkout downstream repository  
-        uses: actions/checkout@v4
-        with:  
-          repository: lcxfs1991/zh-hans.react.dev
-          token: ${{ secrets.GITHUB_TOKEN }} # 使用下游仓库的 PAT  
-  
-      - name: Set up Git  
-        uses: gittools/actions/git@v1 
-  
-      - name: Pull updates from upstream  
-        run: |  
-          git remote add upstream https://github.com/reactjs/zh-hans.react.dev.git
-          git fetch upstream  
-          git merge upstream/main # 假设上游的主分支是 main  
-   
-      - name: Push changes to downstream  
-        run: |  
-          git push origin main  
-   
-      - name: Create Pull Request  
-        id: create-pr  
-        uses: peter-Evans/create-pull-request@v4  
-        with:  
-          token: ${{ secrets.GITHUB_TOKEN }}  
-          commit-message: "Automated updates from upstream"  
-          title: "Automated updates from upstream"  
-          body: "These changes were automatically merged from upstream."  
-          branch: "autoupdate/$(date +%Y%m%d%H%M%S)" # 创建一个基于时间的唯一分支名  
-          base: "cn"
+jobs:
+  release_pull_request:
+    runs-on: ubuntu-latest
+    name: release_pull_request
+    steps:
+    - name: checkout
+      uses: actions/checkout@v1
+    - name: Create PR to branch
+      uses: gorillio/github-action-sync@master
+      with:
+        upstream: git@github.com:reactjs/zh-hans.react.dev.git
+        upstream_branch: main
+        branch: cn
+        pr_labels: upstream
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITBOT_EMAIL: lcxfs1991@gmail.com
+        DRY_RUN: false
