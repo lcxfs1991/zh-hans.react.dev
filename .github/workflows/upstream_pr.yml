@@ -17,7 +17,7 @@ jobs:
     name: Template Synchronise
     runs-on: ubuntu-latest
     env:
-      SYNCHRONISER_TOKEN: ${{ secrets.GITHUB_TOKEN } }
+      SYNCHRONISER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
