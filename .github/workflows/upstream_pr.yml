@@ -3,21 +3,39 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 7 * * *'
-jobs:
-  release_pull_request:
-    runs-on: ubuntu-latest
-    name: release_pull_request
-    steps:
-    - name: checkout
-      uses: actions/checkout@v4
-    - name: Create PR to branch
-      uses: gorillio/github-action-sync@master
-      with:
-        upstream: git@github.com:reactjs/zh-hans.react.dev.git
-        upstream_branch: main
-        branch: cn
-        pr_labels: upstream
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITBOT_EMAIL: lcxfs1991@gmail.com
-        DRY_RUN: false
+
+jobs:  
+  create-pull-request:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Set up Git  
+        uses: gittools/actions/git@v1  
+        with:  
+          fetchDepth: 0 # Fetch all history so that Git can determine the upstream correctly  
+  
+      - name: Checkout upstream repository  
+        run: |  
+          git config --global user.name 'lcxfs1991'  
+          git config --global user.email 'lcxfs1991@gmail.com'  
+          git remote add upstream git@github.com:reactjs/zh-hans.react.dev.git
+          git fetch upstream  
+          git checkout -B pr-branch upstream/main  
+   
+      - name: Push changes to downstream repository  
+        run: |  
+          git remote add downstream git@github.com:lcxfs1991/zh-hans.react.dev.git
+          git push -u downstream pr-branch
+   
+      - name: Create Pull Request  
+        id: create-pr  
+        uses: peter-Evans/create-pull-request@v4  
+        with:  
+          token: ${{ secrets.CHECKOUT_REPO_TOKEN }}  
+          commit-message: "Automated updates from upstream"  
+          title: "Automated updates from upstream"  
+          body: "These changes were automatically merged from upstream."  
+          labels: "automerge, upstream-updates"  
+          branch: "pr-branch"  
+          base: "cn"  
+          repo: "lcxfs1991/zh-hans.react.dev"  
+          owner: "lcxs1991"
