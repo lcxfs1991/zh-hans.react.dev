@@ -19,6 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: lcxfs1991/zh-hans.react.dev
+          branch: main
       - name: Reset the default branch with upstream changes
         run: |
           git remote add upstream https://github.com/reactjs/zh-hans.react.dev.git
@@ -29,4 +30,3 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}  
           branch: upstream-changes
-          base: main
