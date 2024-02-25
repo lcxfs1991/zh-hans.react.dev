@@ -20,7 +20,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v1
     - name: Create PR to branch
-      uses: gorillio/github-action-sync@master
+      uses: emacs-ng/github-action-pull-upstream@master
       with:
         upstream: git@github.com:lcxfs1991/zh-hans.react.dev.git
         upstream_branch: main
