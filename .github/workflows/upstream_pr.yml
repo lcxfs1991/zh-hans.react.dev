@@ -12,23 +12,37 @@ permissions:
   issues: write
   pull-requests: write
 
-jobs:
-  template-sync:
-    name: Template Synchronise
-    runs-on: ubuntu-latest
-    env:
-      SYNCHRONISER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ env.SYNCHRONISER_TOKEN }}
+env:
+  # Required, URL to upstream (fork base)
+  UPSTREAM_URL: "https://github.com/reactjs/zh-hans.react.dev.git"
+  # Required, token to authenticate bot, could use ${{ secrets.GITHUB_TOKEN }} 
+  # Over here, we use a PAT instead to authenticate workflow file changes.
+  WORKFLOW_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Optional, defaults to main
+  UPSTREAM_BRANCH: "main"
+  # Optional, defaults to UPSTREAM_BRANCH
+  DOWNSTREAM_BRANCH: cn"
+  # Optional fetch arguments
+  FETCH_ARGS: ""
+  # Optional merge arguments
+  MERGE_ARGS: ""
+  # Optional push arguments
+  PUSH_ARGS: ""
+  # Optional toggle to spawn time logs (keeps action active) 
+  SPAWN_LOGS: "false" # "true" or "false"
 
-      - name: Render and synchronise the template repository
-        uses: n3tuk/action-synchronise-upstream@v1.0.2
-        with:
-          token: ${{ env.SYNCHRONISER_TOKEN }}
-          repository: reactjs/zh-hans.react.dev
-          branch: main
-          target: cn
-          labels: update from upstream
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GitHub Sync to Upstream Repository
+        uses: dabreadman/sync-upstream-repo@v1.3.0
+        with: 
+          upstream_repo: ${{ env.UPSTREAM_URL }}
+          upstream_branch: ${{ env.UPSTREAM_BRANCH }}
+          downstream_branch: ${{ env.DOWNSTREAM_BRANCH }}
+          token: ${{ env.WORKFLOW_TOKEN }}
+          fetch_args: ${{ env.FETCH_ARGS }}
+          merge_args: ${{ env.MERGE_ARGS }}
+          push_args: ${{ env.PUSH_ARGS }}
+          spawn_logs: ${{ env.SPAWN_LOGS }}
