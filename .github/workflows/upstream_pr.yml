@@ -13,20 +13,19 @@ permissions:
   pull-requests: write
 
 jobs:
-  release_pull_request:
+  updateFork:
     runs-on: ubuntu-latest
-    name: release_pull_request
     steps:
-    - name: checkout
-      uses: actions/checkout@v1
-    - name: Create PR to branch
-      uses: emacs-ng/github-action-pull-upstream@master
-      with:
-        upstream: git@github.com:lcxfs1991/zh-hans.react.dev.git
-        upstream_branch: main
-        branch: cn
-        pr_labels: upstream
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITBOT_EMAIL: yo@gorill.io
-        DRY_RUN: false
+      - uses: actions/checkout@v4
+        with:
+          repository: lcxfs1991/zh-hans.react.dev
+      - name: Reset the default branch with upstream changes
+        run: |
+          git remote add upstream https://github.com/reactjs/zh-hans.react.dev.git
+          git fetch upstream main:upstream-main
+          git reset --hard upstream-main
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  
+          branch: upstream-changes
