@@ -28,5 +28,5 @@ jobs:
         pr_labels: upstream
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITBOT_EMAIL: docschina2017@gmail.com
+        GITBOT_EMAIL: yo@gorill.io
         DRY_RUN: false
