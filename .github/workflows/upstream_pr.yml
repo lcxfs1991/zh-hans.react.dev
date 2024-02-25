@@ -13,7 +13,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  updateFork:
+  update_from_upstream:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,3 +29,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}  
           branch: upstream-changes
+          base: main
