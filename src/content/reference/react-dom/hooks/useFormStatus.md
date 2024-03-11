@@ -182,36 +182,16 @@ import {useFormStatus} from 'react-dom';
 export default function UsernameForm() {
   const {pending, data} = useFormStatus();
 
-  const [showSubmitted, setShowSubmitted] = useState(false);
-  const submittedUsername = useRef(null);
-  const timeoutId = useRef(null);
-
-  useMemo(() => {
-    if (pending) {
-      submittedUsername.current = data?.get('username');
-      if (timeoutId.current != null) {
-        clearTimeout(timeoutId.current);
-      }
-
-      timeoutId.current = setTimeout(() => {
-        timeoutId.current = null;
-        setShowSubmitted(false);
-      }, 2000);
-      setShowSubmitted(true);
-    }
-  }, [pending, data]);
-
   return (
-    <>
-      <label>请求用户名：</label><br />
-      <input type="text" name="username" />
+    <div>
+      <h3>请求用户名：</h3>
+      <input type="text" name="username" disabled={pending}/>
       <button type="submit" disabled={pending}>
-        {pending ? '提交中……' : '提交'}
+        提交  
       </button>
-      {showSubmitted ? (
-        <p>提交请求用户名：{submittedUsername.current}</p>
-      ) : null}
-    </>
+      <br />
+      <p>{data ? `请求 ${data?.get("username")}...`: ''}</p>
+    </div>
   );
 }
 ```
@@ -219,10 +199,15 @@ export default function UsernameForm() {
 ```js src/App.js
 import UsernameForm from './UsernameForm';
 import { submitForm } from "./actions.js";
+import {useRef} from 'react';
 
 export default function App() {
+  const ref = useRef(null);
   return (
-    <form action={submitForm}>
+    <form ref={ref} action={async (formData) => {
+      await submitForm(formData);
+      ref.current.reset();
+    }}>
       <UsernameForm />
     </form>
   );
@@ -231,8 +216,22 @@ export default function App() {
 
 ```js src/actions.js hidden
 export async function submitForm(query) {
-    await new Promise((res) => setTimeout(res, 1000));
+    await new Promise((res) => setTimeout(res, 2000));
 }
+```
+
+```css
+p {
+    height: 14px;
+    padding: 0;
+    margin: 2px 0 0 0 ;
+    font-size: 14px
+}
+
+button {
+    margin-left: 2px;
+}
+
 ```
 
 ```json package.json hidden

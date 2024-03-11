@@ -84,7 +84,7 @@ img { height: 200px; }
 
 ### 第一步：导出组件 {/*step-1-export-the-component*/}
 
-`export default` 前缀是一种 [JavaScript 标准语法](https://developer.mozilla.org/docs/web/javascript/reference/statements/export)（非 React 的特性）。它允许你标签一个文件中的主要函数以便你以后可以从其他文件引入它。欲了解更多关于导入的内容，请参阅 [组件的导入与导出](/learn/importing-and-exporting-components) 章节！
+`export default` 前缀是一种 [JavaScript 标准语法](https://developer.mozilla.org/docs/web/javascript/reference/statements/export)（非 React 的特性）。它允许你导出一个文件中的主要函数以便你以后可以从其他文件引入它。欲了解更多关于导入的内容，请参阅 [组件的导入与导出](/learn/importing-and-exporting-components) 章节！
 
 ### 第二步：定义函数 {/*step-2-define-the-function*/}
 
@@ -98,7 +98,7 @@ React 组件是常规的 JavaScript 函数，但 **组件的名称必须以大�
 
 ### 第三步：添加标签 {/*step-3-add-markup*/}
 
-这个组件返回一个带有 `src` 和 `alt` 属性的 `<img />` 标签。`<img />` 写得像 HTML，但实际上是 JavaScript！这种语法被称为 [JSX](/learn/writing-markup-with-jsx)，它允许你在 JavaScript 中嵌入使用标签。
+这个组件返回一个带有 `src` 和 `alt` 属性的 `<img />` 标签。`<img />` 写得像 HTML，但实际上是 JavaScript！这种语法被称为 [JSX](/learn/writing-markup-with-jsx)，它允许你在 JavaScript 中嵌入标签。
 
 返回语句可以全写在一行上，如下面组件中所示：
 
