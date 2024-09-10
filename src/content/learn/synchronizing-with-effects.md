@@ -28,7 +28,7 @@ title: '使用 Effect 同步'
 
 有时这还不够。考虑一个 `ChatRoom` 组件，它在屏幕上可见时必须连接到聊天服务器。连接到服务器不是一个纯计算（它包含副作用），因此它不能在渲染过程中发生。然而，并没有一个特定的事件（比如点击）导致 `ChatRoom` 被显示。
 
-**Effect 允许你指定由渲染本身，而不是特定事件引起的副作用**。在聊天中发送消息是一个“事件”，因为它直接由用户点击特定按钮引起。然而，建立服务器连接是 Effect，因为它应该发生无论哪种交互导致组件出现。Effect 在屏幕更新后的 [提交阶段](/learn/render-and-commit) 运行。这是一个很好的时机，可以将 React 组件与某个外部系统（如网络或第三方库）同步。
+**Effect 允许你指定由渲染本身，而不是特定事件引起的副作用**。在聊天中发送消息是一个“事件”，因为它直接由用户点击特定按钮引起。然而，建立服务器连接是 Effect，因为无论哪种交互致使组件出现，它都会发生。Effect 在屏幕更新后的 [提交阶段](/learn/render-and-commit) 运行。这是一个很好的时机，可以将 React 组件与某个外部系统（如网络或第三方库）同步。
 
 <Note>
 
@@ -45,7 +45,7 @@ title: '使用 Effect 同步'
 
 编写 Effect 需要遵循以下三个规则：
 
-1. **声明 Effect**。默认情况下，Effect 会在每次渲染后都会执行。
+1. **声明 Effect**。默认情况下，Effect 会在每次 [提交](/learn/render-and-commit) 后都会执行。
 2. **指定 Effect 依赖**。大多数 Effect 应该按需执行，而不是在每次渲染后都执行。例如，淡入动画应该只在组件出现时触发。连接和断开服务器的操作只应在组件出现和消失时，或者切换聊天室时执行。文章将介绍如何通过指定依赖来控制如何按需执行。
 3. **必要时添加清理（cleanup）函数**。有时 Effect 需要指定如何停止、撤销，或者清除它的效果。例如，“连接”操作需要“断连”，“订阅”需要“退订”，“获取”既需要“取消”也需要“忽略”。你将学习如何使用 **清理函数** 来做到这一切。
 
@@ -319,7 +319,7 @@ export default function App() {
     <>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={() => setIsPlaying(!isPlaying)}>
-        {isPlaying ? 'Pause' : 'Play'}
+        {isPlaying ? '暂停' : '播放'}
       </button>
       <VideoPlayer
         isPlaying={isPlaying}
@@ -361,10 +361,10 @@ function VideoPlayer({ src, isPlaying }) {
 
   useEffect(() => {
     if (isPlaying) {
-      console.log('Calling video.play()');
+      console.log('调用 video.play()');
       ref.current.play();
     } else {
-      console.log('Calling video.pause()');
+      console.log('调用 video.pause()');
       ref.current.pause();
     }
   }, [isPlaying]);
@@ -379,7 +379,7 @@ export default function App() {
     <>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={() => setIsPlaying(!isPlaying)}>
-        {isPlaying ? 'Pause' : 'Play'}
+        {isPlaying ? '暂停' : '播放'}
       </button>
       <VideoPlayer
         isPlaying={isPlaying}
@@ -598,6 +598,33 @@ input { display: block; margin-bottom: 20px; }
 
 下面提供一些常用的 Effect 应用模式。
 
+<Pitfall>
+
+#### 不要使用 refs 来防止触发 Effects {/*dont-use-refs-to-prevent-effects-from-firing*/}
+
+在开发过程中，防止Effects触发两次的一个常见陷阱是使用 `ref` 来防止Effect运行多次。例如，你使用 `useRef` “修复”上述错误：
+
+```js {1,3-4}
+  const connectionRef = useRef(null);
+  useEffect(() => {
+    // 🚩 这并不能修复这个错误！！！
+    if (!connectionRef.current) {
+      connectionRef.current = createConnection();
+      connectionRef.current.connect();
+    }
+  }, []);
+```
+
+这使得你在开发过程中确实只看到了一次 `“✅ 正在连接...”`，但其实并没有修复这个错误。
+
+当用户导航离开时，连接仍未关闭，当他们导航返回时，又会创建一个新的连接。当用户在应用程序中导航时，连接会不断堆积，就像“修复”之前一样。
+
+要修复这个错误，仅仅让Effect只运行一次是不够的。要让副作用在重载后能正确工作，意味着需要像上面的解决方案一样清理连接。
+
+请看下面的示例，了解如何处理常见模式。
+
+</Pitfall>
+
 ### 控制非 React 组件 {/*controlling-non-react-widgets*/}
 
 有时需要添加不是使用 React 编写的 UI 小部件。例如，假设你要向页面添加地图组件，并且它有一个 `setZoomLevel()` 方法，你希望调整缩放级别（zoom level）并与 React 代码中的 `zoomLevel` state 变量保持同步。Effect 看起来应该与下面类似：
@@ -609,7 +636,7 @@ useEffect(() => {
 }, [zoomLevel]);
 ```
 
-请注意，在这种情况下不需要清理。在开发环境中，React 会调用 Effect 两次，但这两次挂载时依赖项 `zoomLevel` 都是相同的，所以会跳过执行第二次挂载时的 Effect。开发环境中它可能会稍微慢一些，但这问题不大，因为它在生产中不会进行不必要的重复挂载。
+请注意，在这种情况下不需要清理。在开发环境中，虽然 React 会调用 Effect 两次，但这两次挂载时依赖项 `zoomLevel` 都是相同的，所以即使执行两次 Effect，也不会造成任何影响。开发环境中它可能会稍微慢一些，但这问题不大，因为它在生产中不会进行不必要的重复挂载。
 
 某些 API 可能不允许连续调用两次。例如，内置的 [`<dialog>`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLDialogElement) 元素的 [`showModal`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLDialogElement/showModal) 方法在连续调用两次时会抛出异常，此时实现清理函数并使其关闭对话框：
 
@@ -827,7 +854,7 @@ export default function App() {
 
 </Sandpack>
 
-在最开始时可以看到三个日志输出：`安排 "a" 日志`，`取消 "a" 日志`，还有一个 `安排 "a" 日志`。三秒后，还会有一条日志显示：`a`。正如之前所说，额外的安排/取消动作产生的原因是因为 React 在开发环境中，会重新挂载组件一次，以验证你是否正确地实现了清理函数。
+在最开始时可以看到三个日志输出：`安排 "a" 日志`，`取消 "a" 日志`，还有一个 `安排 "a" 日志`。三秒后，还会有一条日志显示：`a`。正如之前所说，额外的安排/取消动作产生的原因是：React 在开发环境中，会重新挂载组件一次，以验证你是否正确地实现了清理函数。
 
 现在编辑输入框，输入 `abc`。如果输入速度足够快，你会看到 `安排 "ab" 日志`，紧接着的是 `取消 "ab" 日志` 和 `安排 "abc" 日志`。**React 总是在执行下一轮渲染的 Effect 之前清理上一轮渲染的 Effect**。这就是为什么即使你快速输入，最多也只有一个安排操作。试试多次编辑输入框，并观察控制台以了解 Effect 是如何被清理的。
 
@@ -1373,7 +1400,7 @@ body {
 
 <Solution>
 
-在 [严格模式](/reference/react/StrictMode) 下，（本网站中的示例沙盒（sandbox）都已开启严格模式），React 在开发模式中，每个组件都会重复挂载一次。这也就导致计数器组件被挂载了两次。所以，计时器也被设立了两次，这就是为什么计数器每秒递增两次的原因。
+在 [严格模式](/reference/react/StrictMode) 下，（本网站中的示例沙盒（sandbox）都已开启严格模式），React 在开发模式中，每个组件都会重复挂载一次。这也就导致计数器组件被挂载了两次。所以，计时器也被设立了两次，这就是计数器每秒递增两次的原因。
 
 然而，这并不是 React 本身的错：而是 Effect 代码中本身就存在问题。React 只不过把这个问题放大了。真正的错误原因是这样的 Effect 启动后，但没有提供清理函数，所以上一次的 Effect 残留就没有被除去。
 

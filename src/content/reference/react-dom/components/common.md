@@ -34,7 +34,7 @@ title: "普通组件（例如 <div>）"
 
 * `suppressContentEditableWarning`：布尔值。如果为 `true` 将会抑制 React 对同时具有 `child` 和 `contentEditable={true}` 属性的元素发出的警告（这两者通常不能同时使用）。如果你正在构建一个手动管理 `contentEditable` 内容的文本输入库，请使用此选项。
 
-* `suppressHydrationWarning`：布尔值。如果你使用 [服务器渲染](/reference/react-dom/server)，通常会在服务器和客户端渲染不同内容时发出警告。在一些罕见的情况下（比如时间戳），很难或者不可能保证完全匹配。如果你设置 `suppressHydrationWarning` 为 `true`，React 不会在元素属性和内容不匹配时发出警告。它只能在同级工作，并被作为脱围机制。[阅读有关抑制 hydrate 错误的内容](/reference/react-dom/client/hydrateRoot#suppressing-unavoidable-hydration-mismatch-errors)。
+* `suppressHydrationWarning`：布尔值。如果你使用 [服务器渲染](/reference/react-dom/server)，通常会在服务器和客户端渲染不同内容时发出警告。在一些罕见的情况下（比如时间戳），很难或者不可能保证完全匹配。如果你设置 `suppressHydrationWarning` 为 `true`，React 不会在元素属性和内容不匹配时发出警告。它只能在同级工作，并被作为脱围机制。[阅读有关抑制激活错误的内容](/reference/react-dom/client/hydrateRoot#suppressing-unavoidable-hydration-mismatch-errors)。
 
 * `style`：CSS 样式对象，如 `{ fontWeight：'bold'，margin：20 }`。与 DOM [`style`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/style) 属性类似，CSS 属性应该使用像 `camelCase` 这样的驼峰命名法，如应该使用 `fontWeight` 而不是 `font-weight`。你可以将字符串或数字作为值传递，类似 `width: 100`，React 会自动将值附加为 `px`（“像素”），除非它是一个 [无单位的属性](https://github.com/facebook/react/blob/81d4ee9ca5c405dce62f64e61506b8e155f38d8d/packages/react-dom-bindings/src/shared/CSSProperty.js#L8-L57)。我们建议仅在动态样式中使用 `style`，即事先不知道样式值。在其他情况下，使用普通的 CSS 类和 `className` 更有效。[了解有关 `className` 和 `style` 的更多信息](#applying-css-styles)。
 
@@ -259,9 +259,30 @@ title: "普通组件（例如 <div>）"
 
 * `node`：DOM 节点或 `null`。当回调函数被附加在 `ref` 属性后，触发回调时，该参数为对应的 DOM 节点。当 ref 被分离时值为 `null`。除非在每次渲染时都传递相同的函数引用作为 `ref` 回调，否则该回调将在组件的每次重新渲染期间被暂时分离和重新连接。
 
+<Canary>
+
 #### 返回值 {/*returns*/}
 
-不要从 `ref` 回调函数中返回任何内容。
+*  **optional** `cleanup function`: When the `ref` is detached, React will call the cleanup function. If a function is not returned by the `ref` callback, React will call the callback again with `null` as the argument when the `ref` gets detached.
+
+```js
+
+<div ref={(node) => {
+  console.log(node);
+
+  return () => {
+    console.log('Clean up', node)
+  }
+}}>
+
+```
+
+#### Caveats {/*caveats*/}
+
+* When Strict Mode is on, React will **run one extra development-only setup+cleanup cycle** before the first real setup. This is a stress-test that ensures that your cleanup logic "mirrors" your setup logic and that it stops or undoes whatever the setup is doing. If this causes a problem, implement the cleanup function.
+* When you pass a *different* `ref` callback, React will call the *previous* callback's cleanup function if provided. If not cleanup function is defined, the `ref` callback will be called with `null` as the argument. The *next* function will be called with the DOM node.
+
+</Canary>
 
 ---
 

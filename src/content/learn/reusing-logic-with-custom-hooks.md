@@ -1875,7 +1875,7 @@ html, body { min-height: 300px; }
 <Recap>
 
 - 自定义 Hook 让你可以在组件间共享逻辑。
-- 自定义 Hook 命名必须以后跟一个大写字母的 `use` 开头。
+- 自定义 Hook 命名必须以 `use` 开头，后面跟一个大写字母。
 - 自定义 Hook 共享的只是状态逻辑，不是状态本身。
 - 你可以将响应值从一个 Hook 传到另一个，并且他们会保持最新。
 - 每次组件重新渲染时，所有的 Hook 会重新运行。
@@ -1899,7 +1899,7 @@ export default function Counter() {
 }
 ```
 
-你需要在 `useCounter.js` 中编写你的自定义 Hook，并且把它引入到 `Counter.js` 文件。
+你需要在 `useCounter.js` 中编写你的自定义 Hook，并且把它引入到 `App.js` 文件。
 
 <Sandpack>
 

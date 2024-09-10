@@ -439,7 +439,7 @@ setForm({
 
 <Recipes titleText="状态中的对象和数组的示例" titleId="examples-objects">
 
-#### 表单（对象）{/*form-object*/}
+#### 表单（对象） {/*form-object*/}
 
 在此示例中，`form` 状态变量保存一个对象。每个输入框都有一个变更处理函数，用整个表单的下一个状态调用 `setForm`。`{ ...form }` 展开语法确保替换状态对象而不是改变它。
 
@@ -512,7 +512,7 @@ input { margin-left: 5px; }
 
 <Solution />
 
-#### 表单（嵌套对象）{/*form-nested-object*/}
+#### 表单（嵌套对象） {/*form-nested-object*/}
 
 在此示例中，状态更为嵌套。当你更新嵌套状态时，你需要复制一份正在更新的对象，以及向上“包含”它的所有对象。阅读 [更新嵌套对象](/learn/updating-objects-in-state#updating-a-nested-object) 以了解更多。
 
@@ -1089,7 +1089,7 @@ export default function CountLabel({ count }) {
 }
 ```
 
-假设你想显示计数器是否自上次更改以来 **增加或减少**。`count` props 无法告诉你这一点——你需要跟踪它的先前值。添加 `prevCount` 状态变量来跟踪它，再添加另一个状态变量 `trend` 来保存计数是否增加或减少。比较 `prevCount` 和 `count`，如果它们不相等，则更新 `prevCount` 和 `trend`。现在你既可以显示当前的 `count` props，也可以显示 **自上次渲染以来它如何改变**。
+假设你想显示计数器自上次更改以来是否有 **增加或减少**。`count` props 无法告诉你这一点——你需要跟踪它的先前值。添加 `prevCount` 状态变量来跟踪它，再添加另一个状态变量 `trend` 来保存计数是否增加或减少。比较 `prevCount` 和 `count`，如果它们不相等，则更新 `prevCount` 和 `trend`。现在你既可以显示当前的 `count` props，也可以显示 **自上次渲染以来它如何改变**。
 
 <Sandpack>
 
@@ -1261,7 +1261,7 @@ setTodos(prevTodos => {
 });
 ```
 
-现在，这个更新函数是纯粹的，所以多调用一次不会对行为产生影响。这就是为什么 React 调用它两次可以帮助你找到错误的原因。**只有组件、初始化函数和更新函数需要是纯粹的**。事件处理函数不需要是纯粹的，所以 React 不会两次调用你的事件处理函数。
+现在，这个更新函数是纯粹的，所以多调用一次不会对行为产生影响。这就是 React 调用它两次可以帮助你找到错误的原因。**只有组件、初始化函数和更新函数需要是纯粹的**。事件处理函数不需要是纯粹的，所以 React 不会两次调用你的事件处理函数。
 
 阅读 [保持组件纯粹](/learn/keeping-components-pure) 以了解更多信息。
 
