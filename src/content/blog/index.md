@@ -4,11 +4,54 @@ title: React Blog
 
 <Intro>
 
-这个博客是 React 团队更新的官方来源。任何重要的内容，包括发布说明或弃用通知，都会首先在这里发布。你也可以关注 Twitter 的 [@reactjs](https://twitter.com/reactjs) 账号，但如果你只阅读这个博客，你也不会错过任何重要的内容。
+这个博客是 React 团队更新的官方来源。任何重要的内容，包括发布说明或弃用通知，都会首先在这里发布。
 
+你也可以在 Bluesky 上关注 [@react.dev](https://bsky.app/profile/react.dev)，或者在 Twitter 上关注 [@reactjs](https://twitter.com/reactjs)。不过只要你阅读这个博客，就不会错过任何重要内容。
 </Intro>
 
 <div className="sm:-mx-5 flex flex-col gap-5 mt-12">
+
+<BlogCard title="React Labs: View Transitions, Activity, and more" date="April 23, 2025" url="/blog/2025/04/23/react-labs-view-transitions-activity-and-more">
+
+In React Labs posts, we write about projects in active research and development. In this post, we're sharing two new experimental features that are ready to try today, and sharing other areas we're working on now ...
+
+</BlogCard>
+
+<BlogCard title="React Compiler RC" date="April 21, 2025" url="/blog/2025/04/21/react-compiler-rc">
+
+我们今天将发布 React Compiler 的第一个候选发布版（RC）。
+
+</BlogCard>
+
+<BlogCard title="逐步淘汰 Create React App" date="February 14, 2025" url="/blog/2025/02/14/sunsetting-create-react-app">
+
+今日起，我们将正式弃用 Create React App 作为新应用的推荐工具，并建议现有应用迁移至框架或构建工具（如 Vite、Parcel 和 RSBuild）。我们还提供了相关文档用于这些情况：你的项目不适合使用框架、你想要构建自己的框架，或者只是想通过从零开始构建一个 React 应用来了解 React 的工作原理等等……
+
+</BlogCard>
+
+<BlogCard title="React v19 " date="December 5, 2024" url="/blog/2024/12/05/react-19">
+
+在我们的 React 19 升级指南中, 我们分享了将应用程序升级到 React 19 的分步说明。在这篇文章中，我们将概述 React 19 的新特性，以及如何使用它们……
+
+</BlogCard>
+
+<BlogCard title="React Compiler 发布 Beta 版本" date="October 21, 2024" url="/blog/2024/10/21/react-compiler-beta-release">
+
+我们在 React Conf 2024 上宣布了 React Compiler 的实验性版本。从那时起我们已经取得了很多进展，在这篇文章中，我们将分享 React Compiler 下一步要做的事情……
+
+</BlogCard>
+
+<BlogCard title="回顾 React Conf 2024" date="May 22, 2024" url="/blog/2024/05/22/react-conf-2024-recap">
+
+上周我们在内华达州亨德森举办了为期两天的 React Conf 2024 大会，有 700 多名与会者亲临现场，讨论 UI 工程领域的最新进展。这是我们自 2019 年以来首次举办线下会议，我们很高兴能够再次将社区团结在一起……
+
+</BlogCard>
+
+<BlogCard title="React 19 升级指南" date="April 25, 2024" url="/blog/2024/04/25/react-19-upgrade-guide">
+
+React 19 中新增的改进需要一些破坏性变更，但我们已经尽力让升级过程尽可能平滑，我们预计这些变更不会影响大多数应用。在这篇文章中，我们将指导你完成将库升级到 React 19 的步骤……
+
+</BlogCard>
 
 <BlogCard title="React Labs：我们正在努力的方向——2024 年 2 月" date="February 15, 2024" url="/blog/2024/02/15/react-labs-what-we-have-been-working-on-february-2024">
 

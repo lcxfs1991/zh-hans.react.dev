@@ -179,7 +179,7 @@ function Cup({ guest }) {
 }
 
 export default function TeaGathering() {
-  let cups = [];
+  const cups = [];
   for (let i = 1; i <= 12; i++) {
     cups.push(<Cup key={i} guest={i} />);
   }
@@ -249,7 +249,7 @@ export default function TeaGathering() {
 
 ```js src/Clock.js active
 export default function Clock({ time }) {
-  let hours = time.getHours();
+  const hours = time.getHours();
   if (hours >= 0 && hours <= 6) {
     document.getElementById('time').className = 'night';
   } else {
@@ -311,7 +311,7 @@ body > * {
 
 ```js src/Clock.js active
 export default function Clock({ time }) {
-  let hours = time.getHours();
+  const hours = time.getHours();
   let className;
   if (hours >= 0 && hours <= 6) {
     className = 'night';
@@ -610,17 +610,17 @@ export default function StoryTray({ stories }) {
 import { useState, useEffect } from 'react';
 import StoryTray from './StoryTray.js';
 
-let initialStories = [
+const initialStories = [
   {id: 0, label: "Ankit's Story" },
   {id: 1, label: "Taylor's Story" },
 ];
 
 export default function App() {
-  let [stories, setStories] = useState([...initialStories])
-  let time = useTime();
+  const [stories, setStories] = useState([...initialStories])
+  const time = useTime();
 
-  // HACK: Prevent the memory from growing forever while you read docs.
-  // We're breaking our own rules here.
+  // 临时解决方案：防止在阅读文档时内存无限制增长。
+  // 我们在这里违反了自己的规则。
   if (stories.length > 100) {
     stories.length = 100;
   }
@@ -633,7 +633,7 @@ export default function App() {
         textAlign: 'center',
       }}
     >
-      <h2>It is {time.toLocaleTimeString()} now.</h2>
+      <h2>现在是 {time.toLocaleTimeString()}。</h2>
       <StoryTray stories={stories} />
     </div>
   );
@@ -706,17 +706,17 @@ export default function StoryTray({ stories }) {
 import { useState, useEffect } from 'react';
 import StoryTray from './StoryTray.js';
 
-let initialStories = [
+const initialStories = [
   {id: 0, label: "Ankit's Story" },
   {id: 1, label: "Taylor's Story" },
 ];
 
 export default function App() {
-  let [stories, setStories] = useState([...initialStories])
-  let time = useTime();
+  const [stories, setStories] = useState([...initialStories])
+  const time = useTime();
 
-  // HACK: Prevent the memory from growing forever while you read docs.
-  // We're breaking our own rules here.
+  // 临时解决方案：防止在阅读文档时内存无限制增长。
+  // 我们在这里违反了自己的规则。
   if (stories.length > 100) {
     stories.length = 100;
   }
@@ -729,7 +729,7 @@ export default function App() {
         textAlign: 'center',
       }}
     >
-      <h2>It is {time.toLocaleTimeString()} now.</h2>
+      <h2>现在是 {time.toLocaleTimeString()}。</h2>
       <StoryTray stories={stories} />
     </div>
   );
@@ -774,7 +774,7 @@ li {
 ```js src/StoryTray.js active
 export default function StoryTray({ stories }) {
   // 复制数组！
-  let storiesToDisplay = stories.slice();
+  const storiesToDisplay = stories.slice();
 
   // 不影响原始数组：
   storiesToDisplay.push({
@@ -798,17 +798,17 @@ export default function StoryTray({ stories }) {
 import { useState, useEffect } from 'react';
 import StoryTray from './StoryTray.js';
 
-let initialStories = [
+const initialStories = [
   {id: 0, label: "Ankit's Story" },
   {id: 1, label: "Taylor's Story" },
 ];
 
 export default function App() {
-  let [stories, setStories] = useState([...initialStories])
-  let time = useTime();
+  const [stories, setStories] = useState([...initialStories])
+  const time = useTime();
 
-  // HACK: Prevent the memory from growing forever while you read docs.
-  // We're breaking our own rules here.
+  // 临时解决方案：防止在阅读文档时内存无限制增长。
+  // 我们在这里违反了自己的规则。
   if (stories.length > 100) {
     stories.length = 100;
   }
@@ -821,7 +821,7 @@ export default function App() {
         textAlign: 'center',
       }}
     >
-      <h2>It is {time.toLocaleTimeString()} now.</h2>
+      <h2>现在是 {time.toLocaleTimeString()}。</h2>
       <StoryTray stories={stories} />
     </div>
   );

@@ -2,16 +2,21 @@ name: Analyze Bundle (Comment)
 
 on:
   workflow_run:
-    workflows: ["Analyze Bundle"]
+    workflows: ['Analyze Bundle']
     types:
       - completed
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  
 jobs:
   comment:
     runs-on: ubuntu-latest
     steps:
       - name: Download Event Type
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
           workflow: analyze.yml
           run_id: ${{ github.event.workflow_run.id }}
@@ -26,7 +31,7 @@ jobs:
 
       - name: Download base branch bundle stats
         if: github.event.workflow_run.conclusion == 'success' && steps.get-type.outputs.event-type == 'pull_request'
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
           workflow: analyze.yml
           run_id: ${{ github.event.workflow_run.id }}
@@ -35,7 +40,7 @@ jobs:
 
       - name: Download PR number
         if: github.event.workflow_run.conclusion == 'success' && steps.get-type.outputs.event-type == 'pull_request'
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
           workflow: analyze.yml
           run_id: ${{ github.event.workflow_run.id }}
@@ -61,7 +66,7 @@ jobs:
           echo "pr-number=$pr_number" >> $GITHUB_OUTPUT
 
       - name: Comment
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728
         with:
           header: next-bundle-analysis
           number: ${{ steps.get-comment-body.outputs.pr-number }}

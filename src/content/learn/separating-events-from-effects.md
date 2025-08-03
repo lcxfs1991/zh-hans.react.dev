@@ -44,7 +44,7 @@ function ChatRoom({ roomId }) {
   return (
     <>
       <input value={message} onChange={e => setMessage(e.target.value)} />
-      <button onClick={handleSendClick}>Send</button>;
+      <button onClick={handleSendClick}>Send</button>
     </>
   );
 }
@@ -439,7 +439,7 @@ function ChatRoom({ roomId, theme }) {
   // ...
 ```
 
-这个方法解决了问题。注意你必须从 Effect 依赖项中 **移除** `onConnected`。**Effect Event 是非响应式的并且必须从依赖项中删除**。
+这个方法解决了问题。注意你必须从 Effect 依赖项中 **移除** `theme`，因为 Effect 中没有使用它。你也不需要 **添加** `onConnected`，因为 **Effect Event 是非响应式的并且必须从依赖项中删除**。
 
 验证新表现是否和你预期的一样：
 
@@ -899,7 +899,7 @@ function Timer() {
     setCount(count + 1);
   });
 
-  useTimer(onTick, 1000); // 🔴 Avoid: 传递 Effect Event
+  useTimer(onTick, 1000); // 🔴 避免: 传递 Effect Event
 
   return <h1>{count}</h1>
 }
@@ -912,7 +912,7 @@ function useTimer(callback, delay) {
     return () => {
       clearInterval(id);
     };
-  }, [delay, callback]); // 需要在依赖项中指定“callback”
+  }, [delay, callback]); // 需要在依赖项中指定 “callback”
 }
 ```
 
@@ -934,7 +934,7 @@ function useTimer(callback, delay) {
 
   useEffect(() => {
     const id = setInterval(() => {
-      onTick(); // ✅ Good: 只在 Effect 内部局部调用
+      onTick(); // ✅ 好: 只在 Effect 内部局部调用
     }, delay);
     return () => {
       clearInterval(id);
@@ -972,6 +972,23 @@ Effect Event 是 Effect 代码的非响应式“片段”。他们应该在使�
 </Hint>
 
 <Sandpack>
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "experimental",
+    "react-dom": "experimental",
+    "react-scripts": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
+```
+
 
 ```js
 import { useState, useEffect } from 'react';
@@ -1025,6 +1042,22 @@ button { margin: 10px; }
 如果你移除了抑制注释，React 就会告诉你这个 Effect 的代码依赖于 `increment`，但是你通过宣称这个 Effect 不依赖于响应式值（`[]`）“欺骗”了 React。将 `increment` 添加到依赖项数组：
 
 <Sandpack>
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "experimental",
+    "react-dom": "experimental",
+    "react-scripts": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
+```
 
 ```js
 import { useState, useEffect } from 'react';

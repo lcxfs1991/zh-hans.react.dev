@@ -109,7 +109,7 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-[Effect “反应”响应式值](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values) 因为这里的 `roomId` 是一个响应式值（它可能随重新渲染而改变），所以 linter 会验证你是否将它指定为依赖。如果 `roomId` 变成不同的值，React 将重新运行 Effect。这可以确保聊天界面与所选房间保持一致，并把变化“反馈”给下拉菜单：
+[Effect 会对响应式值作出“反应”。](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values) 因为这里的 `roomId` 是一个响应式值（它可能随重新渲染而改变），所以 linter 会验证你是否将它指定为依赖。如果 `roomId` 变成不同的值，React 将重新运行 Effect。这可以确保聊天界面与所选房间保持一致，并把变化“反馈”给下拉菜单：
 
 <Sandpack>
 
@@ -222,7 +222,7 @@ function ChatRoom() {
 }
 ```
 
-现在 `roomId` 不是响应式值（并且不能在重新渲染时改变），那它不就不是依赖：
+现在 `roomId` 不是响应式值（并且不会在重新渲染时改变），因此它不需要作为依赖项：
 
 <Sandpack>
 
@@ -274,7 +274,7 @@ button { margin-left: 10px; }
 2. 然后，你采纳 linter 的建议，调整依赖，以 **匹配你所改变的代码**。
 3. 如果你对依赖不满意，你可以 **回到第一步**（并再次修改代码）。
 
-最后一部分很重要。**如果你想改变依赖，首先要改变所涉及到的代码**。你可以把依赖看作是 [Effect的代码所依赖的所有响应式值的列表](/learn/lifecycle-of-reactive-effects#react-verifies-that-you-specified-every-reactive-value-as-a-dependency)。你不要 **选择** 把什么放在这个列表上。该列表 **描述了** 代码。要改变依赖，请改变代码。
+最后一部分很重要。**如果你想改变依赖，首先要改变所涉及到的代码**。你可以把依赖看作是 [Effect 的代码所依赖的所有响应式值的列表](/learn/lifecycle-of-reactive-effects#react-verifies-that-you-specified-every-reactive-value-as-a-dependency)。你不要 **选择** 把什么放在这个列表上。该列表 **描述了** 代码。要改变依赖，请改变代码。
 
 这可能感觉就像解方程一样。你有一个目标（例如，移除一个依赖），你需要“找到”与该目标相匹配的代码。不是每个人都觉得解方程很有趣，写 Effect 也是如此！幸运的是，下面有一些常见的解决方案你可以去尝试。
 
@@ -325,7 +325,7 @@ export default function Timer() {
     <>
       <h1>
         计数器：{count}
-        <button onClick={() => setCount(0)}>重制</button>
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
@@ -2333,4 +2333,4 @@ label, button { display: block; margin-bottom: 5px; }
 </Challenges>
 
 **译注**：
-<a name="note1"></a> 在创建 `onTick` 函数时，由于闭包的缘故，`setCount(count + increment)` 捕获的是创建时 `count` 和 `increment` 值。由于这里的“说谎”，每次重新渲染时新创建的 `onTick` 函数不能替换掉 Effect 里旧 `onTick` 函数，于是最终的效果就是 `setCount(0 + 1)` <br/>
+<a name="note1"></a> [1] 在创建 `onTick` 函数时，由于闭包的缘故，`setCount(count + increment)` 捕获的是创建时 `count` 和 `increment` 值。由于这里的“说谎”，每次重新渲染时新创建的 `onTick` 函数不能替换掉 Effect 里旧 `onTick` 函数，于是最终的效果就是 `setCount(0 + 1)` <br/>

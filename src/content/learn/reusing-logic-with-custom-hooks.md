@@ -241,12 +241,12 @@ React 应用是由组件构成，而组件由内置或自定义 Hook 构成。�
 如果你创建的函数没有调用任何 Hook 方法，在命名时应避免使用 `use` 前缀，把它当成一个常规函数去命名。如下案例中的 `useSorted` 函数就没有调用任何 Hook 方法，所以更推荐用 `getSorted` 来命名：
 
 ```js
-// 🔴 Avoid: 没有调用其他Hook的Hook
+// 🔴 避免：没有调用其他 Hook 的 Hook
 function useSorted(items) {
   return items.slice().sort();
 }
 
-// ✅ Good: 没有使用Hook的常规函数
+// ✅ 好：没有使用 Hook 的常规函数
 function getSorted(items) {
   return items.slice().sort();
 }
@@ -258,7 +258,7 @@ function getSorted(items) {
 function List({ items, shouldSort }) {
   let displayedItems = items;
   if (shouldSort) {
-    // ✅ 在条件分支里调用getSorted()是没问题的，因为它不是Hook
+    // ✅ 在条件分支里调用 getSorted() 是没问题的，因为它不是 Hook
     displayedItems = getSorted(items);
   }
   // ...
@@ -268,7 +268,7 @@ function List({ items, shouldSort }) {
 哪怕内部只使用了一个 Hook，你也应该给这个函数加 `use` 前缀（让它成为一个 Hook）：
 
 ```js
-// ✅ Good: 一个使用了其他Hook的Hook
+// ✅ 好：一个使用了其他 Hook 的 Hook
 function useAuth() {
   return useContext(Auth);
 }
@@ -277,7 +277,7 @@ function useAuth() {
 技术上 React 对此并不强制要求。原则上你可以写出不调用其他 Hook 的 Hook。但这常常会难以理解且受限，所以最好避免这种方式。但是它在极少数场景下可能是有益的。例如函数目前也许并没有使用任何 Hook，但是你计划未来在该函数内部添加一些 Hook 调用。那么使用 `use` 前缀命名就很有意义：
 
 ```js {3-4}
-// ✅ Good: 之后可能使用其他Hook的Hook
+// ✅ 好：之后可能使用其他 Hook 的 Hook
 function useAuth() {
   // TODO: 当认证功能实现以后，替换这一行：
   // 返回 useContext(Auth)；
@@ -325,7 +325,7 @@ function SaveButton() {
 }
 ```
 
-这是完全独立的两个 state 变量和 Effect！只是碰巧同一时间值一样，因为你使用了相同的外部值同步两个组件（无论网络是否开启）。
+这是完全独立的两个 state 变量和 Effect！只是碰巧同一时间值一样，因为你使用了相同的外部值（网络是否开启）同步两个组件。
 
 为了更好的说明这一点，我们需要一个不同的示例。看下面的 `Form` 组件：
 
@@ -449,7 +449,7 @@ function Form() {
 
 每当组件重新渲染，自定义 Hook 中的代码就会重新运行。这就是组件和自定义 Hook 都 [需要是纯函数](/learn/keeping-components-pure) 的原因。我们应该把自定义 Hook 的代码看作组件主体的一部分。
 
-由于自定义 Hook 会随着组件一起重新渲染，所以组件可以一直接收到最新的 props 和 state。想知道这意味着什么，那就看看这个聊天室的示例。修改 ServeUrl 或者 roomID：
+由于自定义 Hook 会随着组件一起重新渲染，所以组件可以一直接收到最新的 props 和 state。想知道这意味着什么，那就看看这个聊天室的示例。修改 serverUrl 或者 roomId：
 
 <Sandpack>
 
@@ -1207,7 +1207,7 @@ function ShippingForm({ country }) {
 function ChatRoom({ roomId }) {
   const [serverUrl, setServerUrl] = useState('https://localhost:1234');
 
-  // 🔴 Avoid: 使用自定义“生命周期” Hook
+  // 🔴 避免：使用自定义“生命周期” Hook
   useMount(() => {
     const connection = createConnection({ roomId, serverUrl });
     connection.connect();
@@ -1217,7 +1217,7 @@ function ChatRoom({ roomId }) {
   // ...
 }
 
-// 🔴 Avoid: 创建自定义“生命周期” Hook
+// 🔴 避免：创建自定义“生命周期” Hook
 function useMount(fn) {
   useEffect(() => {
     fn();
@@ -1233,7 +1233,7 @@ function useMount(fn) {
 function ChatRoom({ roomId }) {
   const [serverUrl, setServerUrl] = useState('https://localhost:1234');
 
-  // ✅ Good: 通过用途分割的两个原始Effect
+  // ✅ 好：通过用途分割的两个原始 Effect
 
   useEffect(() => {
     const connection = createConnection({ serverUrl, roomId });
@@ -1255,7 +1255,7 @@ function ChatRoom({ roomId }) {
 function ChatRoom({ roomId }) {
   const [serverUrl, setServerUrl] = useState('https://localhost:1234');
 
-  // ✅ Great: 以用途命名的自定义Hook
+  // ✅ 非常好：以用途命名的自定义 Hook
   useChatRoom({ serverUrl, roomId });
   useImpressionLog('visit_chat', { roomId });
   // ...
@@ -1331,9 +1331,9 @@ export function useOnlineStatus() {
 
 </Sandpack>
 
-在上述示例中，`useOnlineStatus` 借助一组 [`useState`](/reference/react/useState) 和 [`useEffect`](/reference/react/useEffect) 实现。但这不是最好的解决方案。它有许多边界用例没有考虑到。例如假设当组件加载时，`isOnline` 已经为 `true`，但是如果网络已经离线的话这就是错误的。你可以使用浏览器的 [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine) API 来检查，但是在生成初始 HTML 的服务端直接使用它是没用的。简而言之这段代码可以改进。
+在上述示例中，`useOnlineStatus` 借助一组 [`useState`](/reference/react/useState) 和 [`useEffect`](/reference/react/useEffect) 实现。但这不是最好的解决方案。它有许多边界用例没有考虑到。例如，它认为当组件加载时，`isOnline` 已经为 `true`，但是如果网络已经离线的话这就是错误的。你可以使用浏览器的 [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine) API 来检查，但是在生成初始 HTML 的服务端直接使用它是没用的。简而言之这段代码可以改进。
 
-幸运的是，React 18 包含了一个叫做 [`useSyncExternalStore`](/reference/react/useSyncExternalStore) 的专用 API，它可以解决你所有这些问题。这里展示了如何利用这个新 API 来重写你的 `useOnlineStatus` Hook：
+React 包含了一个叫做 [`useSyncExternalStore`](/reference/react/useSyncExternalStore) 的专用 API，它可以解决你所有这些问题。这里展示了如何利用这个新 API 来重写你的 `useOnlineStatus` Hook：
 
 <Sandpack>
 
@@ -1715,7 +1715,7 @@ html, body { min-height: 300px; }
 
 </Sandpack>
 
-但是 **没有必要** 这样做。和常规函数一样，最终是由你决定在哪里绘制代码不同部分之间的边界。你也可以采取不一样的方法。把大部分必要的逻辑移入一个 [JavaScript 类](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Classes)，而不是把逻辑保留在 Effect 中：
+但是 **没有必要** 这样做。和常规函数一样，最终是由你决定在哪里划分代码不同部分之间的边界。你也可以采取不一样的方法。把大部分必要的逻辑移入一个 [JavaScript 类](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Classes)，而不是把逻辑保留在 Effect 中：
 
 <Sandpack>
 
@@ -1875,7 +1875,7 @@ html, body { min-height: 300px; }
 <Recap>
 
 - 自定义 Hook 让你可以在组件间共享逻辑。
-- 自定义 Hook 命名必须以后跟一个大写字母的 `use` 开头。
+- 自定义 Hook 命名必须以 `use` 开头，后面跟一个大写字母。
 - 自定义 Hook 共享的只是状态逻辑，不是状态本身。
 - 你可以将响应值从一个 Hook 传到另一个，并且他们会保持最新。
 - 每次组件重新渲染时，所有的 Hook 会重新运行。
@@ -1899,7 +1899,7 @@ export default function Counter() {
 }
 ```
 
-你需要在 `useCounter.js` 中编写你的自定义 Hook，并且把它引入到 `Counter.js` 文件。
+你需要在 `useCounter.js` 中编写你的自定义 Hook，并且把它引入到 `App.js` 文件。
 
 <Sandpack>
 
@@ -2081,7 +2081,6 @@ export function useCounter(delay) {
 <Sandpack>
 
 ```js
-import { useState } from 'react';
 import { useCounter } from './useCounter.js';
 
 export default function Counter() {

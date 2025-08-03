@@ -44,9 +44,7 @@ function useCSS(rule) {
 
 #### 参数 {/*parameters*/}
 
-* `setup`: The function with your Effect's logic. Your setup function may also optionally return a *cleanup* function. When your component is added to the DOM, but before any layout effects fire, React will run your setup function. After every re-render with changed dependencies, React will first run the cleanup function (if you provided it) with the old values, and then run your setup function with the new values. When your component is removed from the DOM, React will run your cleanup function.
- 
-* **optional** `dependencies`: The list of all reactive values referenced inside of the `setup` code. Reactive values include props, state, and all the variables and functions declared directly inside your component body. If your linter is [configured for React](/learn/editor-setup#linting), it will verify that every reactive value is correctly specified as a dependency. The list of dependencies must have a constant number of items and be written inline like `[dep1, dep2, dep3]`. React will compare each dependency with its previous value using the [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) comparison algorithm. If you don't specify the dependencies at all, your Effect will re-run after every re-render of the component.
+* `setup`：处理 Effect 的函数。setup 函数选择性返回一个 **清理（cleanup）** 函数。当你的组件添加到 DOM 中，但在任何布局触发之前，React 将运行你的 setup 函数。在每次重新渲染时，如果依赖项发生变化并且提供了 cleanup 函数，React 首先会使用旧值运行 cleanup 函数，然后使用新值运行你的 setup 函数。当你的组件从 DOM 中移除时，React 将运行你的 cleanup 函数。
 
 * **可选** `dependencies`：`setup` 代码中引用的所有响应式值的列表。响应式值包括 props、state 以及所有直接在组件内部声明的变量和函数。如果你的代码检查工具 [配置了 React](/learn/editor-setup#linting)，那么它将验证是否每个响应式值都被正确地指定为依赖项。依赖列表必须具有固定数量的项，并且必须像 `[dep1, dep2, dep3]` 这样内联编写。React 将使用 [`Object.is`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 来比较每个依赖项和它先前的值。如果省略此参数，则将在每次重新渲染组件之后重新运行 Effect。
 
@@ -54,11 +52,11 @@ function useCSS(rule) {
 
 `useInsertionEffect` 返回 `undefined`。
 
-* Effects only run on the client. They don't run during server rendering.
-* You can't update state from inside `useInsertionEffect`.
-* By the time `useInsertionEffect` runs, refs are not attached yet.
-* `useInsertionEffect` may run either before or after the DOM has been updated. You shouldn't rely on the DOM being updated at any particular time.
-* Unlike other types of Effects, which fire cleanup for every Effect and then setup for every Effect, `useInsertionEffect` will fire both cleanup and setup one component at a time. This results in an "interleaving" of the cleanup and setup functions.
+* Effect 只在客户端运行。在服务器渲染期间不会运行。
+* 你不能在 `useInsertionEffect` 内部更新状态。
+* 当 `useInsertionEffect` 运行时，`refs` 尚未附加。
+* `useInsertionEffect` 可能在 DOM 更新之前或之后运行。你不应该依赖于 DOM 在任何特定时间的更新状态。
+* 与其他类型的 Effect 不同，它们会先为每个 Effect 触发 cleanup 函数，然后再触发 setup 函数。而 `useInsertionEffect` 会同时触发 cleanup 函数和 setup 函数。这会导致 cleanup 函数和 setup 函数的“交错”执行。
 ---
 
 ## 用法 {/*usage*/}
@@ -88,7 +86,7 @@ function useCSS(rule) {
 
 第一个问题无法解决，但是 `useInsertionEffect` 可以帮助你解决第二个问题。
 
-Call `useInsertionEffect` to insert the styles before any layout effects fire:
+Call `useInsertionEffect` to insert the styles before any layout Effects fire:
 
 ```js {4-11}
 // 在你的 CSS-in-JS 库中
@@ -133,7 +131,7 @@ function useCSS(rule) {
 
 #### 这与在渲染期间或 `useLayoutEffect` 中注入样式相比有何优势？ {/*how-is-this-better-than-injecting-styles-during-rendering-or-uselayouteffect*/}
 
-如果你在渲染期间注入样式并且 React 正在处理 [非阻塞更新](/reference/react/useTransition#marking-a-state-update-as-a-non-blocking-transition)，那么浏览器将在渲染组件树时每一帧都会重新计算样式，这可能会 **非常慢**。
+如果你在渲染期间注入样式并且 React 正在处理 [非阻塞更新](/reference/react/useTransition#perform-non-blocking-updates-with-actions)，那么浏览器将在渲染组件树时每一帧都会重新计算样式，这可能会 **非常慢**。
 
 `useInsertionEffect` 比在 [`useLayoutEffect`](/reference/react/useLayoutEffect) 或 [`useEffect`](/reference/react/useEffect) 期间注入样式更好。因为它会确保 `<style>` 标签在其它 Effect 运行前被注入。否则，正常的 Effect 中的布局计算将由于过时的样式而出错。
 

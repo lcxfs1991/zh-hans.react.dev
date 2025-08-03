@@ -30,17 +30,11 @@ title: "<input>"
 
 #### 属性 {/*props*/}
 
-`<input>` 支持所有 [常见的元素属性](/reference/react-dom/components/common#props)。
+`<input>` 支持所有 [常见的元素属性](/reference/react-dom/components/common#common-props)。
 
-<Canary>
+[`formAction`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#formaction): 字符串或函数。设置了 `type="submit"` 或 `type="image"` 属性的 `input` 标签，会覆盖父表单对应属性 `<form action>`。当向 `formAction` 传递 URL 时，表单会表现为标准 HTML 表单；当传递函数时，该函数将处理表单提交。详见 [`<form action>`](/reference/react-dom/components/form#props)。
 
-React's extensions to the `formAction` prop are currently only available in React's Canary and experimental channels. In stable releases of React, `formAction` works only as a [built-in browser HTML component](/reference/react-dom/components#all-html-components). Learn more about [React's release channels here](/community/versioning-policy#all-release-channels).
-
-</Canary>
-
-[`formAction`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#formaction): A string or function. Overrides the parent `<form action>` for `type="submit"` and `type="image"`. When a URL is passed to `action` the form will behave like a standard HTML form. When a function is passed to `formAction` the function will handle the form submission. See [`<form action>`](/reference/react-dom/components/form#props).
-
-You can [make an input controlled](#controlling-an-input-with-a-state-variable) by passing one of these props:
+你可以通过传递以下属性之一来[使输入框成为受控组件](#controlling-an-input-with-a-state-variable)：
 
 * `checked`：布尔值，控制复选框或单选按钮是否被选中。
 * `value`：字符串，控制文本框的输入文本（如果是单选按钮，则为其表单数据）。
@@ -303,7 +297,7 @@ input { margin: 5px; }
 
 <Pitfall>
 
-默认情况下，`<form>` 内的任何 `<button>` 都可以提交表单。这可能会让人感到惊讶！如果你有自定义 `Button` 组件，请考虑使用 [`<button type="button">`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input/button) 而不是 `<button>`。如果你想要明确指定提交表单的按钮，请使用 `<button type="submit">`。
+默认情况下，`<form>` 内的任何没有 `type` 属性的 `<button>` 都可以提交表单。这可能会让人感到惊讶！如果你有自定义 `Button` 组件，请考虑使用 [`<button type="button">`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/button) 而不是 `<button>`。如果你想要明确指定提交表单的按钮，请使用 `<button type="submit">`。
 
 </Pitfall>
 
