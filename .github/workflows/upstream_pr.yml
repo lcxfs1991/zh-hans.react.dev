@@ -1,0 +1,31 @@
+name: Upstream PR
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 7 * * *'
+
+permissions:
+  contents: write
+  packages: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  update_from_upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: lcxfs1991/zh-hans.react.dev
+          # ref: main
+      - name: Reset the default branch with upstream changes
+        run: |
+          git remote add upstream https://github.com/reactjs/zh-hans.react.dev.git
+          git fetch upstream main:upstream-main
+          git reset --hard upstream-main
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  
+          branch: upstream-changes
+          delete-branch: true
