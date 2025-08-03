@@ -25,15 +25,25 @@
       "path": "/learn/installation",
       "routes": [
         {
-          "title": "启动一个新的 React 项目",
-          "path": "/learn/start-a-new-react-project"
+          "title": "创建一个 React 应用",
+          "path": "/learn/creating-a-react-app"
         },
         {
-          "title": "将 React 添加到已有项目中",
+          "title": "从零构建一个 React 应用",
+          "path": "/learn/build-a-react-app-from-scratch"
+        },
+        {
+          "title": "将 React 添加到现有项目中",
           "path": "/learn/add-react-to-an-existing-project"
-        },
+        }
+      ]
+    },
+    {
+      "title": "配置",
+      "path": "/learn/setup",
+      "routes": [
         {
-          "title": "编辑器配置",
+          "title": "编辑器设置",
           "path": "/learn/editor-setup"
         },
         {
@@ -47,6 +57,29 @@
       ]
     },
     {
+      "title": "React Compiler",
+      "path": "/learn/react-compiler",
+      "canary": true,
+      "routes": [
+        {
+          "title": "介绍",
+          "path": "/learn/react-compiler/introduction"
+        },
+        {
+          "title": "安装",
+          "path": "/learn/react-compiler/installation"
+        },
+        {
+          "title": "逐步使用",
+          "path": "/learn/react-compiler/incremental-adoption"
+        },
+        {
+          "title": "调试和故障排除",
+          "path": "/learn/react-compiler/debugging"
+        }
+      ]
+    },
+    {
       "hasSectionHeader": true,
       "sectionHeader": "学习 React"
     },
@@ -56,7 +89,7 @@
       "path": "/learn/describing-the-ui",
       "routes": [
         {
-          "title": "第一个组件",
+          "title": "你的第一个组件",
           "path": "/learn/your-first-component"
         },
         {
@@ -177,7 +210,7 @@
           "path": "/learn/manipulating-the-dom-with-refs"
         },
         {
-          "title": "使用 Effect 同步",
+          "title": "使用 Effect 进行同步",
           "path": "/learn/synchronizing-with-effects"
         },
         {

@@ -207,9 +207,9 @@ export default function Heading({ level, children }) {
 
 你不能只通过 props 来实现它。这就是 context 大显身手的地方。你可以通过以下三个步骤来实现它：
 
-1. **创建** 一个 context。（你可以将其命名为 `LevelContext`, 因为它表示的是标题级别。)
+1. **创建** 一个 context。（你可以将其命名为 `LevelContext`, 因为它表示的是标题级别。）
 2. 在需要数据的组件内 **使用** 刚刚创建的 context。（`Heading` 将会使用 `LevelContext`。）
-3. 在指定数据的组件中 **提供** 这个 context。 （`Section` 将会提供 `LevelContext`。）
+3. 在指定数据的组件中 **提供** 这个 context。（`Section` 将会提供 `LevelContext`。）
 
 Context 可以让父节点，甚至是很远的父节点都可以为其内部的整个组件树提供数据。
 
@@ -463,7 +463,7 @@ export default function Section({ children }) {
 }
 ```
 
-**把它们用 context provider 包裹起来**  以提供 `LevelContext` 给它们：
+**把它们用 context provider 包裹起来** 以提供 `LevelContext` 给它们：
 
 ```js {1,6,8}
 import { LevelContext } from './LevelContext.js';
@@ -471,15 +471,15 @@ import { LevelContext } from './LevelContext.js';
 export default function Section({ level, children }) {
   return (
     <section className="section">
-      <LevelContext.Provider value={level}>
+      <LevelContext value={level}>
         {children}
-      </LevelContext.Provider>
+      </LevelContext>
     </section>
   );
 }
 ```
 
-这告诉 React：“如果在 `<Section>` 组件中的任何子组件请求 `LevelContext`，给他们这个 `level`。”组件会使用 UI 树中在它上层最近的那个 `<LevelContext.Provider>` 传递过来的值。
+这告诉 React：“如果在 `<Section>` 组件中的任何子组件请求 `LevelContext`，给他们这个 `level`。”组件会使用 UI 树中在它上层最近的那个 `<LevelContext>` 传递过来的值。
 
 <Sandpack>
 
@@ -517,9 +517,9 @@ import { LevelContext } from './LevelContext.js';
 export default function Section({ level, children }) {
   return (
     <section className="section">
-      <LevelContext.Provider value={level}>
+      <LevelContext value={level}>
         {children}
-      </LevelContext.Provider>
+      </LevelContext>
     </section>
   );
 }
@@ -570,7 +570,7 @@ export const LevelContext = createContext(1);
 这与原始代码的运行结果相同，但是你不需要向每个 `Heading` 组件传递 `level` 参数了！取而代之的是，它通过访问上层最近的 `Section` 来“断定”它的标题级别：
 
 1. 你将一个 `level` 参数传递给 `<Section>`。
-2. `Section` 把它的子元素包在 `<LevelContext.Provider value={level}>` 里面。
+2. `Section` 把它的子元素包在 `<LevelContext value={level}>` 里面。
 3. `Heading` 使用 `useContext(LevelContext)` 访问上层最近的 `LevelContext` 提供的值。
 
 ## 在相同的组件中使用并提供 context {/*using-and-providing-context-from-the-same-component*/}
@@ -599,9 +599,9 @@ export default function Section({ children }) {
   const level = useContext(LevelContext);
   return (
     <section className="section">
-      <LevelContext.Provider value={level + 1}>
+      <LevelContext value={level + 1}>
         {children}
-      </LevelContext.Provider>
+      </LevelContext>
     </section>
   );
 }
@@ -647,9 +647,9 @@ export default function Section({ children }) {
   const level = useContext(LevelContext);
   return (
     <section className="section">
-      <LevelContext.Provider value={level + 1}>
+      <LevelContext value={level + 1}>
         {children}
-      </LevelContext.Provider>
+      </LevelContext>
     </section>
   );
 }
@@ -780,9 +780,9 @@ export default function Section({ children, isFancy }) {
       'section ' +
       (isFancy ? 'fancy' : '')
     }>
-      <LevelContext.Provider value={level + 1}>
+      <LevelContext value={level + 1}>
         {children}
-      </LevelContext.Provider>
+      </LevelContext>
     </section>
   );
 }
@@ -872,7 +872,7 @@ Context 不局限于静态值。如果你在下一次渲染时传递不同的值
 * 传递 Context 的方法:
   1. 通过 `export const MyContext = createContext(defaultValue)` 创建并导出 context。
   2. 在无论层级多深的任何子组件中，把 context 传递给 `useContext(MyContext)` Hook 来读取它。
-  3. 在父组件中把 children 包在 `<MyContext.Provider value={...}>` 中来提供 context。
+  3. 在父组件中把 children 包在 `<MyContext value={...}>` 中来提供 context。
 * Context 会穿过中间的任何组件。
 * Context 可以让你写出 “较为通用” 的组件。
 * 在使用 context 之前，先试试传递 props 或者将 JSX 作为 `children` 传递。
@@ -883,7 +883,7 @@ Context 不局限于静态值。如果你在下一次渲染时传递不同的值
 
 #### 用 context 替代逐层 props {/*replace-prop-drilling-with-context*/}
 
-在这个示例中，切换复选框状态会修改传入每个 `<PlaceImage>` 的 `imageSize` 参数。复选框的 state 保存在顶层的 `App` 组件中，但是每个 `<PlaceImage>` 都需要注意它。
+在这个示例中，切换复选框状态会修改传入每个 `<PlaceImage>` 的 `imageSize` 参数。复选框的 state 保存在顶层的 `App` 组件中，但是每个 `<PlaceImage>` 都需要知晓它的值。
 
 目前，`App` 将 `imageSize` 传递给 `List`，`List` 再将其传递给每个 `Place`，`Place` 又将其传递给 `PlaceImage`。移除 `imageSize` 参数，并在 `App` 组件中直接将其传递给 `PlaceImage`。
 
@@ -1026,7 +1026,7 @@ li {
 
 移除掉所有组件中的 `imageSize` 参数。
 
-在 `Context.js` 中创建并导出 `ImageSizeContext`。然后用 `<ImageSizeContext.Provider value={imageSize}>` 包裹住整个列表来向下传递值，最后在 `PlaceImage` 中使用 `useContext(ImageSizeContext)` 来读取它。
+在 `Context.js` 中创建并导出 `ImageSizeContext`。然后用 `<ImageSizeContext value={imageSize}>` 包裹住整个列表来向下传递值，最后在 `PlaceImage` 中使用 `useContext(ImageSizeContext)` 来读取它。
 
 <Sandpack>
 
@@ -1040,7 +1040,7 @@ export default function App() {
   const [isLarge, setIsLarge] = useState(false);
   const imageSize = isLarge ? 150 : 100;
   return (
-    <ImageSizeContext.Provider
+    <ImageSizeContext
       value={imageSize}
     >
       <label>
@@ -1055,7 +1055,7 @@ export default function App() {
       </label>
       <hr />
       <List />
-    </ImageSizeContext.Provider>
+    </ImageSizeContext>
   )
 }
 

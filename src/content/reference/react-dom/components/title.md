@@ -1,14 +1,6 @@
 ---
 title: "<title>"
-canary: true
 ---
-
-<Canary>
-
-React 对 `<title>` 的扩展当前仅在 React Canary 与 experimental 渠道中可用。在 React 的稳定版本中，`<title>` 仅作为 [浏览器内置 HTML 组件](https://react.dev/reference/react-dom/components#all-html-components) 使用。请在 [此处了解更多关于 React 发布渠道的信息](/community/versioning-policy#all-release-channels)。
-
-</Canary>
-
 
 <Intro>
 
@@ -38,7 +30,7 @@ React 对 `<title>` 的扩展当前仅在 React Canary 与 experimental 渠道�
 
 #### 属性 {/*props*/}
 
-`<title>` 支持所有 [常见元素属性](/reference/react-dom/components/common#props)。
+`<title>` 支持所有 [常见元素属性](/reference/react-dom/components/common#common-props)。
 
 * `children`：`<title>` 只接受文本作为子元素。该文本将成为文档的标题，也可以传递只渲染文本的自定义组件。
 

@@ -18,7 +18,7 @@ const deferredValue = useDeferredValue(value)
 
 ## 参考 {/*reference*/}
 
-### `useDeferredValue(value)` {/*usedeferredvalue*/}
+### `useDeferredValue(value, initialValue?)` {/*usedeferredvalue*/}
 
 在组件的顶层调用 `useDeferredValue` 来获取该值的延迟版本。
 
@@ -36,15 +36,19 @@ function SearchPage() {
 
 #### 参数 {/*parameters*/}
 
-* `value`：你想延迟的值，可以是任何类型。
+* `value`: 你想延迟的值，可以是任何类型。
+* **可选的** `initialValue`: 组件初始渲染时使用的值。如果省略此选项，`useDeferredValue` 在初始渲染期间不会延迟，因为没有以前的版本可以渲染。
+
 
 #### 返回值 {/*returns*/}
 
-在组件的初始渲染期间，返回的延迟值将与你提供的值相同。但是在组件更新时，React 将会先尝试使用旧值进行重新渲染（因此它将返回旧值），然后再在后台使用新值进行另一个重新渲染（这时它将返回更新后的值）。
+- `currentValue`: 在初始渲染期间，返回的延迟值是 `initialValue` 或你提供的值。在更新期间，React 首先尝试使用旧值重新渲染（因此返回旧值），然后在后台尝试使用新值重新渲染（因此返回更新后的值）。
 
 #### 注意事项 {/*caveats*/}
 
-- 你应该向 `useDeferredValue` 传递原始值（如字符串和数字）或在渲染之外创建的对象。如果你在渲染期间创建了一个新对象，并立即将其传递给 `useDeferredValue`，那么每次渲染时这个对象都会不同，这将导致后台不必要的重新渲染。
+- 当更新发生在 Transition 内部时，`useDeferredValue` 总是返回新的 `value` 并且不会产生延迟渲染，因为该更新已经被延迟了。
+
+- 传递给 `useDeferredValue` 的值应该是原始值（如字符串和数字）或是在渲染之外创建的对象。如果你在渲染期间创建一个新对象并立即将其传递给 `useDeferredValue`，它在每次渲染时都会不同，从而导致不必要的后台重新渲染。
 
 - 当 `useDeferredValue` 接收到与之前不同的值（使用 [`Object.is`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 进行比较）时，除了当前渲染（此时它仍然使用旧值），它还会安排一个后台重新渲染。这个后台重新渲染是可以被中断的，如果 `value` 有新的更新，React 会从头开始重新启动后台渲染。举个例子，如果用户在输入框中的输入速度比接收延迟值的图表重新渲染的速度快，那么图表只会在用户停止输入后重新渲染。
 
@@ -84,7 +88,7 @@ function SearchPage() {
 
 这个例子假设你使用了支持 `Suspense` 的数据源：
 
-- 使用支持 suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/getting-started/react-essentials)
+- 使用支持 suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/app/getting-started/fetching-data#with-suspenses)
 - 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
 - 使用 [`use`](/reference/react/use) 读取 Promise 的值
 
@@ -96,21 +100,6 @@ function SearchPage() {
 这个例子中，在获取搜索结果时，`SearchResults` 组件会 [suspend](/reference/react/Suspense#displaying-a-fallback-while-content-is-loading)。尝试输入 `"a"`，等待结果出现后，将其编辑为 `"ab"`。此时 `"a"` 的结果会被加载中的后备方案替代。
 
 <Sandpack>
-
-```json package.json hidden
-{
-  "dependencies": {
-    "react": "experimental",
-    "react-dom": "experimental"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
-}
-```
 
 ```js src/App.js
 import { Suspense, useState } from 'react';
@@ -132,14 +121,9 @@ export default function App() {
 }
 ```
 
-```js src/SearchResults.js hidden
+```js src/SearchResults.js
+import {use} from 'react';
 import { fetchData } from './data.js';
-
-// 注意：此组件使用了一种实验性 API
-// 该 API 尚未在稳定版本的 React 中发布。
-
-// 如果想找实际的例子，可以尝试一个
-// 已经集成了 suspense 的框架，比如 Relay 或 Next.js。
 
 export default function SearchResults({ query }) {
   if (query === '') {
@@ -158,31 +142,6 @@ export default function SearchResults({ query }) {
       ))}
     </ul>
   );
-}
-
-// 这是一个解决演示中的一个 bug 的临时实现。
-// TODO：待 bug 修复后替换为真正的实现。
-function use(promise) {
-  if (promise.status === 'fulfilled') {
-    return promise.value;
-  } else if (promise.status === 'rejected') {
-    throw promise.reason;
-  } else if (promise.status === 'pending') {
-    throw promise;
-  } else {
-    promise.status = 'pending';
-    promise.then(
-      result => {
-        promise.status = 'fulfilled';
-        promise.value = result;
-      },
-      reason => {
-        promise.status = 'rejected';
-        promise.reason = reason;
-      },      
-    );
-    throw promise;
-  }
 }
 ```
 
@@ -211,7 +170,7 @@ async function getData(url) {
 async function getSearchResults(query) {
   // 添加一个假延迟来让等待更加明显。
   await new Promise(resolve => {
-    setTimeout(resolve, 500);
+    setTimeout(resolve, 1000);
   });
 
   const allAlbums = [{
@@ -311,21 +270,6 @@ export default function App() {
 
 <Sandpack>
 
-```json package.json hidden
-{
-  "dependencies": {
-    "react": "experimental",
-    "react-dom": "experimental"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
-}
-```
-
 ```js src/App.js
 import { Suspense, useState, useDeferredValue } from 'react';
 import SearchResults from './SearchResults.js';
@@ -347,14 +291,9 @@ export default function App() {
 }
 ```
 
-```js src/SearchResults.js hidden
+```js src/SearchResults.js
+import {use} from 'react';
 import { fetchData } from './data.js';
-
-// 注意：此组件使用了一种实验性 API
-// 该 API 尚未在稳定版本的 React 中发布。
-
-// 如果想找实际的例子，可以尝试一个
-// 已经集成了 suspense 的框架，比如 Relay 或 Next.js。
 
 export default function SearchResults({ query }) {
   if (query === '') {
@@ -373,31 +312,6 @@ export default function SearchResults({ query }) {
       ))}
     </ul>
   );
-}
-
-// 这是一个解决演示中的一个 bug 的临时实现。
-// TODO：待 bug 修复后应该替换为真正的实现。
-function use(promise) {
-  if (promise.status === 'fulfilled') {
-    return promise.value;
-  } else if (promise.status === 'rejected') {
-    throw promise.reason;
-  } else if (promise.status === 'pending') {
-    throw promise;
-  } else {
-    promise.status = 'pending';
-    promise.then(
-      result => {
-        promise.status = 'fulfilled';
-        promise.value = result;
-      },
-      reason => {
-        promise.status = 'rejected';
-        promise.reason = reason;
-      },      
-    );
-    throw promise;
-  }
 }
 ```
 
@@ -426,7 +340,7 @@ async function getData(url) {
 async function getSearchResults(query) {
 // 添加一个假延迟来让等待更加明显。
   await new Promise(resolve => {
-    setTimeout(resolve, 500);
+    setTimeout(resolve, 1000);
   });
 
   const allAlbums = [{
@@ -534,21 +448,6 @@ input { margin: 10px; }
 
 <Sandpack>
 
-```json package.json hidden
-{
-  "dependencies": {
-    "react": "experimental",
-    "react-dom": "experimental"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
-}
-```
-
 ```js src/App.js
 import { Suspense, useState, useDeferredValue } from 'react';
 import SearchResults from './SearchResults.js';
@@ -576,14 +475,9 @@ export default function App() {
 }
 ```
 
-```js src/SearchResults.js hidden
+```js src/SearchResults.js
+import {use} from 'react';
 import { fetchData } from './data.js';
-
-// 注意：此组件使用了一种实验性 API
-// 该 API 尚未在稳定版本的 React 中发布。
-
-// 如果想找实际的例子，可以尝试一个
-// 已经集成了 suspense 的框架，比如 Relay 或 Next.js。
 
 export default function SearchResults({ query }) {
   if (query === '') {
@@ -602,31 +496,6 @@ export default function SearchResults({ query }) {
       ))}
     </ul>
   );
-}
-
-// 这是一个解决演示中的一个 bug 的临时实现。
-// TODO：待 bug 修复后应该替换为真正的实现。
-function use(promise) {
-  if (promise.status === 'fulfilled') {
-    return promise.value;
-  } else if (promise.status === 'rejected') {
-    throw promise.reason;
-  } else if (promise.status === 'pending') {
-    throw promise;
-  } else {
-    promise.status = 'pending';
-    promise.then(
-      result => {
-        promise.status = 'fulfilled';
-        promise.value = result;
-      },
-      reason => {
-        promise.status = 'rejected';
-        promise.reason = reason;
-      },      
-    );
-    throw promise;
-  }
 }
 ```
 
@@ -655,7 +524,7 @@ async function getData(url) {
 async function getSearchResults(query) {
 // 添加一个假延迟来让等待更加明显。
   await new Promise(resolve => {
-    setTimeout(resolve, 500);
+    setTimeout(resolve, 1000);
   });
 
   const allAlbums = [{

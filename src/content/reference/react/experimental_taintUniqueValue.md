@@ -1,8 +1,9 @@
 ---
 title: experimental_taintUniqueValue
+version: experimental
 ---
 
-<Wip>
+<Experimental>
 
 **此实验性 API 尚未在 React 的稳定版本中提供**。
 
@@ -14,9 +15,9 @@ title: experimental_taintUniqueValue
 
 React 的实验版本可能有一些问题，请勿在生产环境中使用。
 
-此 API 仅在 [React 服务器组件](/reference/react/use-client) 内可用。
+此 API 仅在 [React 服务器组件](/reference/rsc/use-client) 内可用。
 
-</Wip>
+</Experimental>
 
 
 <Intro>
@@ -192,7 +193,7 @@ experimental_taintUniqueValue(
 );
 ```
 
-现在无论何时有人试图将此密码传递给客户端组件，或者通过服务器操作将密码发送给客户端组件时都会引发一个错误，错误消息则是在调用 `taintUniqueValue` 时定义的。
+现在无论何时有人试图将此密码传递给客户端组件，或者通过服务器函数将密码发送给客户端组件时都会引发一个错误，错误消息则是在调用 `taintUniqueValue` 时定义的。
 
 </DeepDive>
 

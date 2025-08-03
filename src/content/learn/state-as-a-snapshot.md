@@ -74,7 +74,7 @@ label, textarea { margin-bottom: 10px; display: block; }
 
 ## 渲染会及时生成一张快照 {/*rendering-takes-a-snapshot-in-time*/}
 
-["正在渲染"](/learn/render-and-commit#step-2-react-renders-your-components) 就意味着 React 正在调用你的组件——一个函数。你从该函数返回的 JSX 就像是 UI 的一张及时的快照。它的 props、事件处理函数和内部变量都是 **根据当前渲染时的 state** 被计算出来的。
+[“正在渲染”](/learn/render-and-commit#step-2-react-renders-your-components) 就意味着 React 正在调用你的组件——一个函数。你从该函数返回的 JSX 就像是在某个时间点上 UI 的快照。它的 props、事件处理函数和内部变量都是 **根据当前渲染时的 state** 被计算出来的。
 
 与照片或电影画面不同，你返回的 UI “快照”是可交互的。它其中包括类似事件处理函数的逻辑，这些逻辑用于指定如何对输入作出响应。React 随后会更新屏幕来匹配这张快照，并绑定事件处理函数。因此，按下按钮就会触发你 JSX 中的点击事件处理函数。
 
@@ -269,12 +269,12 @@ import { useState } from 'react';
 
 export default function Form() {
   const [to, setTo] = useState('Alice');
-  const [message, setMessage] = useState('Hello');
+  const [message, setMessage] = useState('你好');
 
   function handleSubmit(e) {
     e.preventDefault();
     setTimeout(() => {
-      alert(`You said ${message} to ${to}`);
+      alert(`你向 ${to} 说了${message}`);
     }, 5000);
   }
 
@@ -294,7 +294,7 @@ export default function Form() {
         value={message}
         onChange={e => setMessage(e.target.value)}
       />
-      <button type="submit">Send</button>
+      <button type="submit">发送</button>
     </form>
   );
 }
@@ -306,7 +306,7 @@ label, textarea { margin-bottom: 10px; display: block; }
 
 </Sandpack>
 
-**React 会使 state 的值始终”固定“在一次渲染的各个事件处理函数内部。** 你无需担心代码运行时 state 是否发生了变化。
+**React 会使 state 的值始终“固定”在一次渲染的各个事件处理函数内部**。你无需担心代码运行时 state 是否发生了变化。
 
 但是，万一你想在重新渲染之前读取最新的 state 怎么办？你应该使用 [状态更新函数](/learn/queueing-a-series-of-state-updates)，下一页将会介绍！
 
